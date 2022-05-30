@@ -15,7 +15,7 @@
 
 <div class="top">
     <span id="userTip"> 您还没有登录，请登陆后再操作</span>
-    <!--<span if="${user != null}"> <span text="'欢迎您 '+${user.userName}"></span></span>-->
+    <span if="${user != null}"> <span text="'欢迎您 '+${user.userName}"></span></span>
     <span>没有收货地址的提示。。。</span>
 </div>
 <div class="goods">
@@ -49,7 +49,8 @@
                 <span id="stockCount"></span>
             </div>
 
-            <button class="btn btn-primary btn-block" type="button" id="buyButton" onclick="getSeckillPath()">立即秒杀</button>
+            <button class="btn btn-primary btn-block" type="button" id="buyButton" onclick="getSeckillPath()">立即秒杀
+            </button>
             <input type="hidden" name="goodsId" id="goodsId"/>
         </div>
     </div>
@@ -67,28 +68,39 @@
 <!-- common.js -->
 <script type="text/javascript" src="/js/common.js"></script>
 <script>
-    function getSeckillPath(){
+    function getSeckillPath() {
         var goodsId = $("#goodsId").val();
         g_showLoading();
         $.ajax({
-            url:"/seckill/path",
-            type:"GET",
-            data:{
-                goodsId:goodsId
+            url: "/seckill/path",
+            type: "GET",
+            data: {
+                goodsId: goodsId
             },
-            success:function(data){
-                if(data.code == 0){
+            success: function (data) {
+                if (data.code == 0) {
                     var path = data.data;
                     doMiaosha(path);
-                }else{
-                    layer.msg(data.msg);
+                } else {
+                    if (500216 == data.code) {
+                        layer.confirm("抱歉，你还未登录！立即登录？", {btn: ["确定", "取消"]},
+                            function () {
+                                window.location.href = '/page/login';
+                            },
+                            function () {
+                                layer.closeAll();
+                            });
+                    } else {
+                        layer.msg(data.msg);
+                    }
                 }
             },
-            error:function(){
+            error: function () {
                 layer.msg("客户端请求有误");
             }
         });
     }
+
     function getMiaoshaResult(goodsId) {
         g_showLoading();
         $.ajax({
@@ -127,7 +139,7 @@
 
     function doMiaosha(path) {
         $.ajax({
-                url: "/seckill/"+path+"/seckill",
+                url: "/seckill/" + path + "/seckill",
                 type: "POST",
                 data: {
                     goodsId: $("#goodsId").val(),

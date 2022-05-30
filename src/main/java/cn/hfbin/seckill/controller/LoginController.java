@@ -35,13 +35,14 @@ public class LoginController {
     RedisService redisService;
     @Autowired
     UserService userService;
+
     @RequestMapping("/login")
     @ResponseBody
-    public Result<User> doLogin(HttpServletResponse response, HttpSession session , @Valid LoginParam loginParam) {
+    public Result<User> doLogin(HttpServletResponse response, HttpSession session, @Valid LoginParam loginParam) {
         Result<User> login = userService.login(loginParam);
-        if (login.isSuccess()){
-            CookieUtil.writeLoginToken(response,session.getId());
-            redisService.set(UserKey.getByName , session.getId() ,login.getData(), Const.RedisCacheExtime.REDIS_SESSION_EXTIME );
+        if (login.isSuccess()) {
+            CookieUtil.writeLoginToken(response, session.getId());
+            redisService.set(UserKey.getByName, session.getId(), login.getData(), Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
         }
         return login;
     }
@@ -49,8 +50,8 @@ public class LoginController {
     @RequestMapping("/logout")
     public String doLogout(HttpServletRequest request, HttpServletResponse response) {
         String token = CookieUtil.readLoginToken(request);
-        CookieUtil.delLoginToken(request , response);
-        redisService.del(UserKey.getByName , token);
+        CookieUtil.delLoginToken(request, response);
+        redisService.del(UserKey.getByName, token);
         return "login";
     }
 }

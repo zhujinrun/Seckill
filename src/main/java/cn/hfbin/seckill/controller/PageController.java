@@ -14,10 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/page")
 public class PageController {
 
-
     @RequestMapping("login")
-    public String loginPage(){
-
+    public String loginPage() {
         return "login";
     }
 }

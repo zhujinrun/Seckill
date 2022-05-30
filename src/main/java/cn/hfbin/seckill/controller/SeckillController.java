@@ -136,7 +136,8 @@ public class SeckillController implements InitializingBean {
         mm.setGoodsId(goodsId);
         mqSender.sendSeckillMessage(mm);
         return Result.success(0);//排队中
-        /*//判断库存
+        /*
+        //判断库存
         GoodsBo goods = seckillGoodsService.getseckillGoodsBoByGoodsId(goodsId);
         if(goods == null) {
             return Result.error(CodeMsg.NO_GOODS);
@@ -152,7 +153,8 @@ public class SeckillController implements InitializingBean {
         }
         //减库存 下订单 写入秒杀订单
         OrderInfo orderInfo = seckillOrderService.insert(user, goods);
-        return Result.success(orderInfo);*/
+        return Result.success(orderInfo);
+        */
     }
 
     /**
@@ -175,8 +177,7 @@ public class SeckillController implements InitializingBean {
     @AccessLimit(seconds=5, maxCount=5, needLogin=true)
     @RequestMapping(value = "/path", method = RequestMethod.GET)
     @ResponseBody
-    public Result<String> getMiaoshaPath(HttpServletRequest request, User user,
-                                         @RequestParam("goodsId") long goodsId) {
+    public Result<String> getMiaoshaPath(HttpServletRequest request, User user, @RequestParam("goodsId") long goodsId) {
         String loginToken = CookieUtil.readLoginToken(request);
         user = redisService.get(UserKey.getByName, loginToken, User.class);
         if (user == null) {
